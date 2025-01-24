@@ -17,8 +17,6 @@ cd car-management
 2. Install dependencies:
 ```bash
 npm install
-# or
-yarn install
 ```
 
 3. Environment setup:
