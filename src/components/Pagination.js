@@ -6,7 +6,7 @@ export const Pagination = ({ meta, onPageChange }) => {
         <ul className="pagination justify-content-center gap-1">
           <li className={`page-item ${meta.currentPage === 1 ? 'disabled' : ''}`}>
             <button
-              className="page-link rounded bg-white hover:bg-[#0152b2] hover:text-white transition-colors border border-[#0152b2] text-[#0152b2]"
+              className="page-link rounded bg-white"
               onClick={() => onPageChange(meta.currentPage - 1)}
               disabled={meta.currentPage === 1}
             >
@@ -17,7 +17,7 @@ export const Pagination = ({ meta, onPageChange }) => {
           {meta.currentPage > 2 && (
             <li className="page-item">
               <button 
-                className="page-link rounded bg-white hover:bg-[#0152b2] hover:text-white transition-colors border border-[#0152b2] text-[#0152b2]"
+                className="page-link rounded bg-white"
                 onClick={() => onPageChange(1)}
               >
                 1
@@ -30,7 +30,7 @@ export const Pagination = ({ meta, onPageChange }) => {
           {meta.currentPage > 1 && (
             <li className="page-item">
               <button 
-                className="page-link rounded bg-white hover:bg-[#0152b2] hover:text-white transition-colors border border-[#0152b2] text-[#0152b2]"
+                className="page-link rounded bg-white"
                 onClick={() => onPageChange(meta.currentPage - 1)}
               >
                 {meta.currentPage - 1}
@@ -45,7 +45,7 @@ export const Pagination = ({ meta, onPageChange }) => {
           {meta.currentPage < meta.lastPage && (
             <li className="page-item">
               <button 
-                className="page-link rounded bg-white hover:bg-[#0152b2] hover:text-white transition-colors border border-[#0152b2] text-[#0152b2]"
+                className="page-link rounded bg-white"
                 onClick={() => onPageChange(meta.currentPage + 1)}
               >
                 {meta.currentPage + 1}
@@ -58,7 +58,7 @@ export const Pagination = ({ meta, onPageChange }) => {
           {meta.currentPage < meta.lastPage - 1 && (
             <li className="page-item">
               <button 
-                className="page-link rounded bg-white hover:bg-[#0152b2] hover:text-white transition-colors border border-[#0152b2] text-[#0152b2]"
+                className="page-link rounded bg-white"
                 onClick={() => onPageChange(meta.lastPage)}
               >
                 {meta.lastPage}
@@ -68,7 +68,7 @@ export const Pagination = ({ meta, onPageChange }) => {
           
           <li className={`page-item ${meta.currentPage === meta.lastPage ? 'disabled' : ''}`}>
             <button
-              className="page-link rounded bg-white hover:bg-[#0152b2] hover:text-white transition-colors border border-[#0152b2] text-[#0152b2]"
+              className="page-link rounded bg-white"
               onClick={() => onPageChange(meta.currentPage + 1)}
               disabled={meta.currentPage === meta.lastPage}
             >
