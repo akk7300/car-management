@@ -31,8 +31,6 @@ REACT_APP_API_URL=
 4. Start development server:
 ```bash
 npm start
-# or
-yarn start
 ```
 
 The application will run at `http://localhost:3000`
