@@ -4,8 +4,7 @@ A React-based management system for managing vehicle information.
 
 ## Prerequisites
 
-- Node.js (v16 or higher)
-- npm or yarn
+Node.js >= 20
 
 ## Setup
 
