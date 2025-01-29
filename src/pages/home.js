@@ -1,80 +1,51 @@
-import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { API_URL } from "../constants/config";
-import { Table } from "../components/Table";
-import { Form } from "../components/Form";
-import { Modal } from "../components/Modal";
-import { Confirmation } from "../components/Confirmation";
-import { Pagination } from "../components/Pagination";
-import { SearchBox } from "../components/SearchBox";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { carActions } from '../redux/slices/carSlice';
+import { Table } from '../components/Table';
+import { Form } from '../components/Form';
+import { Modal } from '../components/Modal';
+import { Confirmation } from '../components/Confirmation';
+import { Pagination } from '../components/Pagination';
+import { SearchBox } from '../components/SearchBox';
 
 export const Home = () => {
-  const [cars, setCars] = useState([]);
+  const dispatch = useDispatch();
+  const { cars, loading, errors, meta, page, search } = useSelector(state => state.car);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCar, setSelectedCar] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [meta, setMeta] = useState(null);
-  const [search, setSearch] = useState("");
-
+  
   const [formData, setFormData] = useState({
-    registrationNumber: "",
-    brand: "",
-    model: "",
-    notes: "",
+    registrationNumber: '',
+    brand: '',
+    model: '',
+    notes: ''
   });
-
-  const fetchCars = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `${API_URL}?page=${page}${search ? `&search=${search}` : ""}`
-      );
-      setCars(response.data.data);
-      setMeta(response.data.meta);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      toast.error("Failed to fetch cars");
-    }
-  }, [page, search]); 
 
   useEffect(() => {
     const debounced = setTimeout(() => {
-      fetchCars();
+      dispatch(carActions.fetchCarsRequest());
     }, 300);
     return () => clearTimeout(debounced);
-  }, [fetchCars]);
+  }, [dispatch, page, search]);
+
+  useEffect(() => {
+    if (!loading && Object.keys(errors).length === 0 && showModal) {
+      handleCloseModal();
+    }
+  }, [loading, errors]);
 
   const handleSearch = (value) => {
-    setSearch(value);
-    setPage(1);
+    dispatch(carActions.setSearch(value));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      if (selectedCar) {
-        await axios.put(`${API_URL}/${selectedCar.id}`, formData);
-        toast.success("Car updated successfully");
-      } else {
-        await axios.post(API_URL, formData);
-        toast.success("Car added successfully");
-      }
-      fetchCars();
-      handleCloseModal();
-    } catch (error) {
-      if (error.response?.data?.errors) {
-        const newErrors = {};
-        error.response.data.errors.forEach((err) => {
-          newErrors[err.field] = err.message;
-        });
-        setErrors(newErrors);
-      }
+    if (selectedCar) {
+      dispatch(carActions.updateCarRequest({ ...formData, id: selectedCar.id }));
+    } else {
+      dispatch(carActions.addCarRequest(formData));
     }
   };
 
@@ -83,14 +54,8 @@ export const Home = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = async () => {
-    try {
-      await axios.delete(`${API_URL}/${deleteId}`);
-      toast.success("Car deleted successfully");
-      fetchCars();
-    } catch (error) {
-      toast.error("Failed to delete car");
-    }
+  const confirmDelete = () => {
+    dispatch(carActions.deleteCarRequest(deleteId));
     setShowDeleteModal(false);
   };
 
@@ -101,7 +66,7 @@ export const Home = () => {
       registrationNumber: car.registrationNumber,
       brand: car.brand,
       model: car.model,
-      notes: car.notes || "",
+      notes: car.notes || ''
     });
     setShowModal(true);
   };
@@ -110,30 +75,22 @@ export const Home = () => {
     setShowModal(false);
     setSelectedCar(null);
     setFormData({
-      registrationNumber: "",
-      brand: "",
-      model: "",
-      notes: "",
+      registrationNumber: '',
+      brand: '',
+      model: '',
+      notes: ''
     });
-    setErrors({});
   };
 
   const handleInputChange = (field, value) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [field]: value,
+      [field]: value
     }));
-    if (errors[field]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
-      });
-    }
   };
 
   const handlePageChange = (newPage) => {
-    setPage(newPage);
+    dispatch(carActions.setPage(newPage));
   };
 
   return (
@@ -159,11 +116,15 @@ export const Home = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
-      <Pagination meta={meta} onPageChange={handlePageChange} />
+      
+      <Pagination 
+        meta={meta} 
+        onPageChange={handlePageChange} 
+      />
 
       <Modal
         show={showModal}
-        title={selectedCar ? "Edit Car" : "Add New Car"}
+        title={selectedCar ? 'Edit Car' : 'Add New Car'}
         onClose={handleCloseModal}
       >
         <Form
@@ -172,6 +133,7 @@ export const Home = () => {
           onSubmit={handleSubmit}
           onChange={handleInputChange}
           onClose={handleCloseModal}
+          loading={loading}
         />
       </Modal>
 
