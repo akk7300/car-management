@@ -79,6 +79,9 @@ const carSlice = createSlice({
       state.loadingCarModels = false;
       state.carModelsError = action.payload;
     },
+    clearErrors: (state) => {
+      state.errors = {};
+    },
   }
 });
 

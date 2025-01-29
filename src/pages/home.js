@@ -80,6 +80,7 @@ export const Home = () => {
       model: '',
       notes: ''
     });
+    dispatch(carActions.clearErrors());
   };
 
   const handleInputChange = (field, value) => {
